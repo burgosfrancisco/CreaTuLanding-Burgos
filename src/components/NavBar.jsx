@@ -1,22 +1,15 @@
+import { Link } from 'react-router-dom';
 import CartWidget from './CartWidget';
 
 const NavBar = () => {
   return (
-    <nav className="bg-white shadow-sm py-3">
-      <div className="d-flex justify-content-between align-items-center px-4" style={{ width: '100%' }}>
-        {/* Logo */}
-        <a className="navbar-brand fw-bold" href="#">MiTienda</a>
-
-        {/* Enlaces */}
-        <div className="d-flex gap-4">
-          <a className="nav-link" href="#">Inicio</a>
-          <a className="nav-link" href="#">Productos</a>
-          <a className="nav-link" href="#">Contacto</a>
-        </div>
-
-        {/* Carrito */}
-        <CartWidget />
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-3">
+      <Link className="navbar-brand" to="/">MiTienda</Link>
+      <div className="navbar-nav">
+        <Link className="nav-link" to="/category/teclados">Teclados</Link>
+        <Link className="nav-link" to="/category/mouses">Mouses</Link>
       </div>
+      <CartWidget />
     </nav>
   );
 };
