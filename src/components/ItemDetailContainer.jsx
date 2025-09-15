@@ -1,25 +1,40 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { getProductById } from '../mockProducts';
-import ItemDetail from './ItemDetail';
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebaseConfig";
+import ItemDetail from "./ItemDetail";
 
-const ItemDetailContainer = () => {
+function ItemDetailContainer() {
   const [producto, setProducto] = useState(null);
   const [loading, setLoading] = useState(true);
   const { itemId } = useParams();
 
   useEffect(() => {
-    setLoading(true);
-    getProductById(itemId)
-      .then((res) => setProducto(res))
+    const refDoc = doc(db, "productos", itemId);
+
+    getDoc(refDoc)
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          setProducto({ id: snapshot.id, ...snapshot.data() });
+        } else {
+          console.error("El producto no existe en Firebase");
+        }
+      })
+      .catch((error) => console.error("Error al traer detalle:", error))
       .finally(() => setLoading(false));
   }, [itemId]);
 
+  if (loading) return <p>Cargando detalle...</p>;
+
   return (
-    <div className="container mt-4">
-      {loading ? <p>Cargando detalle del producto...</p> : <ItemDetail producto={producto} />}
+    <div>
+      {producto ? (
+        <ItemDetail producto={producto} />
+      ) : (
+        <p>No se encontró el producto.</p>
+      )}
     </div>
   );
-};
+}
 
 export default ItemDetailContainer;

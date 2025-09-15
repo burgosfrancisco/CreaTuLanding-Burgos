@@ -1,39 +1,41 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { collection, getDocs, query, where } from 'firebase/firestore';
-import { db } from '../firebaseConfig';
-import ItemList from './ItemList';
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../firebaseConfig";
+import ItemList from "./ItemList";
 
-const ItemListContainer = () => {
+function ItemListContainer() {
   const [productos, setProductos] = useState([]);
   const [loading, setLoading] = useState(true);
   const { categoryId } = useParams();
 
   useEffect(() => {
-    setLoading(true);
+    const productosRef = collection(db, "productos");
 
-    const productosRef = collection(db, 'productos');
-    const consulta = categoryId
-      ? query(productosRef, where('categoria', '==', categoryId))
+    const q = categoryId
+      ? query(productosRef, where("category", "==", categoryId))
       : productosRef;
 
-    getDocs(consulta)
-      .then((res) => {
-        const productosFirebase = res.docs.map((doc) => ({
+    getDocs(q)
+      .then((snapshot) => {
+        const items = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
-        setProductos(productosFirebase);
+        setProductos(items);
       })
+      .catch((error) => console.error("Error al traer productos:", error))
       .finally(() => setLoading(false));
   }, [categoryId]);
 
+  if (loading) return <p>Cargando productos...</p>;
+
   return (
-    <div className="container mt-4">
-      <h2>{categoryId ? `Categoría: ${categoryId}` : 'Todos los productos'}</h2>
-      {loading ? <p>Cargando productos...</p> : <ItemList productos={productos} />}
+    <div>
+      <h2>{categoryId ? `Categoría: ${categoryId}` : "Todos los productos"}</h2>
+      <ItemList productos={productos} />
     </div>
   );
-};
+}
 
 export default ItemListContainer;
