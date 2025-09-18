@@ -17,10 +17,12 @@ function ItemDetailContainer() {
         if (snapshot.exists()) {
           setProducto({ id: snapshot.id, ...snapshot.data() });
         } else {
-          console.error("El producto no existe en Firebase");
+          console.log("El producto no existe");
         }
       })
-      .catch((error) => console.error("Error al traer detalle:", error))
+      .catch((error) => {
+        console.error("Error al traer detalle:", error);
+      })
       .finally(() => setLoading(false));
   }, [itemId]);
 

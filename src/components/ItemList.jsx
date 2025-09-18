@@ -1,13 +1,17 @@
 import Item from "./Item";
 
-const ItemList = ({ productos }) => {
+function ItemList({ productos }) {
   return (
-    <div className="row">
-      {productos.map((prod) => (
-        <Item key={prod.id} producto={prod} />
-      ))}
+    <div className="container mt-4">
+      <div className="row g-4">
+        {productos.map((prod) => (
+          <div className="col-sm-6 col-md-4 col-lg-3" key={prod.id}>
+            <Item producto={prod} />
+          </div>
+        ))}
+      </div>
     </div>
   );
-};
+}
 
 export default ItemList;

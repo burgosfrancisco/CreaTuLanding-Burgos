@@ -18,13 +18,20 @@ function ItemListContainer() {
 
     getDocs(q)
       .then((snapshot) => {
+        console.log("Docs encontrados:", snapshot.size);
+        snapshot.docs.forEach((d) =>
+          console.log("Doc:", d.id, d.data())
+        );
+
         const items = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
         setProductos(items);
       })
-      .catch((error) => console.error("Error al traer productos:", error))
+      .catch((error) => {
+        console.error("Error al traer productos:", error);
+      })
       .finally(() => setLoading(false));
   }, [categoryId]);
 
@@ -32,10 +39,10 @@ function ItemListContainer() {
 
   return (
     <div>
-      <h2>{categoryId ? `Categoría: ${categoryId}` : "Todos los productos"}</h2>
       <ItemList productos={productos} />
     </div>
   );
 }
 
 export default ItemListContainer;
+
